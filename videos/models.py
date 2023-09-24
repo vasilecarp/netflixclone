@@ -14,8 +14,8 @@ class Video(models.Model):
     slug = models.SlugField(blank=True, null=True)
     video_id = models.CharField(max_length=100, null=True, blank=True)
     active = models.BooleanField(default=True)
-    # timestamp = models.DateTimeField(auto_now_add=True)
-    # updated = models.DateTimeField(auto_now=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     state = models.CharField(max_length=2, choices=VideoStateOptions.choices, default=VideoStateOptions.DRAFT)
     publish_timestamp = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
     @property
