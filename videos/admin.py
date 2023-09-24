@@ -6,10 +6,10 @@ from django.http.request import HttpRequest
 from .models import VideoAllProxy, VideoPublishedProxy
 
 class VideoAllAdmin(admin.ModelAdmin):
-    list_display = ['title', 'id', 'state', 'video_id', 'is_published']
+    list_display = ['title', 'id', 'video_id', 'is_published']
     search_fields = ['title']
-    list_filter = ['state', 'active']
-    readonly_fields = ['id', 'is_published', 'publish_timestamp']
+    list_filter = ['active']
+    readonly_fields = ['id', 'is_published']
     class Meta:
         model = VideoAllProxy
 
@@ -21,7 +21,7 @@ admin.site.register(VideoAllProxy, VideoAllAdmin)
 class VideoPublishedProxyAdmin(admin.ModelAdmin):
     list_display = ['title', 'video_id']
     search_fields = ['title']
-    # list_filter = ['title', 'video_id']
+    # list_filter = ['video_id']
     class Meta:
         model = VideoPublishedProxy
 
