@@ -3,11 +3,17 @@ from django.utils import timezone
 from django.utils.text import slugify
 from netflixclone.db.models import PublishStateOptions
 from .models import Playlist
+from videos.models import Video
 
 class PlaylistModelTestCase(TestCase):
     def setUp(self):
-        self.obj_a = Playlist.objects.create(title='This is my title')
-        self.obj_b = Playlist.objects.create(title='This is my title', state = PublishStateOptions.PUBLISH)
+        video_a = Video.objects.create(title='This is my title', video_id='abc')
+        self.video_a = video_a
+        self.obj_a = Playlist.objects.create(title='This is my title', video=video_a)
+        self.obj_b = Playlist.objects.create(title='This is my title', state = PublishStateOptions.PUBLISH, video=video_a)
+
+    def test_playlist_video(self):        
+        self.assertEqual(self.obj_a.video, self.video_a)
 
     def test_slug_field(self):
         title = self.obj_a.title
