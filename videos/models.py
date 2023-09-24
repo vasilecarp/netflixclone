@@ -11,6 +11,9 @@ class VideoQuerySet(models.QuerySet):
 class VideoManager(models.Manager):
     def get_queryset(self):
         return VideoQuerySet(self.model, using=self._db)
+    
+    def published(self):
+        return self.get_queryset().published()
 
 class Video(models.Model):
     class VideoStateOptions(models.TextChoices):
