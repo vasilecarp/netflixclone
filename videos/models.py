@@ -13,7 +13,7 @@ class PublishStateOptions(models.TextChoices):
 class VideoQuerySet(models.QuerySet):
     def published(self):
         now = timezone.now()
-        return self.filter(state=Video.VideoStateOptions.PUBLISH, publish_timestamp__lte=timezone.now())
+        return self.filter(state=PublishStateOptions.PUBLISH, publish_timestamp__lte=timezone.now())
 
 class VideoManager(models.Manager):
     def get_queryset(self):
@@ -24,7 +24,7 @@ class VideoManager(models.Manager):
 
 
 class Video(models.Model):  
-    VideoStateOptions = PublishStateOptions
+    # VideoStateOptions = PublishStateOptions
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     slug = models.SlugField(blank=True, null=True)
@@ -32,7 +32,7 @@ class Video(models.Model):
     active = models.BooleanField(default=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    state = models.CharField(max_length=2, choices=VideoStateOptions.choices, default=VideoStateOptions.DRAFT)
+    state = models.CharField(max_length=2, choices=PublishStateOptions.choices, default=PublishStateOptions.DRAFT)
     publish_timestamp = models.DateTimeField(auto_now_add=False, auto_now=False, null=True, blank=True)
 
     objects = VideoManager()
@@ -67,3 +67,11 @@ def publish_state_pre_save(sender, instance, *args, **kwargs):
         instance.publish_timestamp = None
 
 pre_save.connect(publish_state_pre_save, sender=Video)
+
+def slugify_pre_save(sender, instance, *args, **kwargs):
+    title = instance.title
+    slug = instance.slug
+    if slug is None:
+        instance.slug = slugify(title)
+
+pre_save.connect(slugify_pre_save, sender=Video)
