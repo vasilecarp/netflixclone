@@ -15,4 +15,6 @@ class VideoModelTestCase(TestCase):
         qs = Video.objects.all()
         self.assertEqual(qs.count(), 1)
 
-    
+    def test_draft_case(self):
+        qs = Video.objects.filter(state=Video.VideoStateOptions.DRAFT)
+        self.assertEqual(qs.count(), 1)
