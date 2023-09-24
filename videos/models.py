@@ -3,6 +3,13 @@ from django.db.models.query import QuerySet
 from django.utils import timezone
 from django.utils.text import slugify
 
+class PublishStateOptions(models.TextChoices):
+        # CONSTANT = 'DB_VALUE', 'Human Readable Value'
+        PUBLISH = 'PU', 'Publish'
+        DRAFT = 'DR', 'Draft'
+        # UNLISTED = 'UN', 'Unlisted'
+        # PRIVATE = 'PR', 'Private'
+
 class VideoQuerySet(models.QuerySet):
     def published(self):
         now = timezone.now()
@@ -13,16 +20,11 @@ class VideoManager(models.Manager):
         return VideoQuerySet(self.model, using=self._db)
     
     def published(self):
-        return self.get_queryset().published()
+        return self.get_queryset().published()  
 
-class Video(models.Model):
-    class VideoStateOptions(models.TextChoices):
-        # CONSTANT = 'DB_VALUE', 'Human Readable Value'
-        PUBLISH = 'PU', 'Publish'
-        DRAFT = 'DR', 'Draft'
-        # UNLISTED = 'UN', 'Unlisted'
-        # PRIVATE = 'PR', 'Private'
 
+class Video(models.Model):  
+    VideoStateOptions = PublishStateOptions
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     slug = models.SlugField(blank=True, null=True)
