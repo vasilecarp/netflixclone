@@ -6,9 +6,9 @@ from django.http.request import HttpRequest
 from .models import VideoAllProxy, VideoPublishedProxy
 
 class VideoAllAdmin(admin.ModelAdmin):
-    list_display = ['title', 'id', 'video_id', 'is_published']
+    list_display = ['title', 'id', 'state', 'video_id', 'is_published']
     search_fields = ['title']
-    list_filter = ['active']
+    list_filter = ['state', 'active']
     readonly_fields = ['id', 'is_published']
     class Meta:
         model = VideoAllProxy
