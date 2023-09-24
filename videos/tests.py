@@ -17,11 +17,11 @@ class VideoModelTestCase(TestCase):
         self.assertEqual(qs.count(), 2)
 
     def test_draft_case(self):
-        qs = Video.objects.filter(state=Video.VideoStateOptions.DRAFT)
+        qs = Video.objects.filter(state='DR')
         self.assertEqual(qs.count(), 1)
 
     def test_publish_case(self):
-        qs = Video.objects.filter(state=Video.VideoStateOptions.PUBLISH)
+        qs = Video.objects.filter(state='PU')
         now = timezone.now()
         published_qs = Video.objects.filter(state=Video.VideoStateOptions.PUBLISH, publish_timestamp__lte=timezone.now())
         self.assertTrue(published_qs.exists())
