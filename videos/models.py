@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models.query import QuerySet
+from django.db.models.signals import pre_save
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -41,11 +41,7 @@ class Video(models.Model):
     def is_published(self):
         return self.active
     
-    def save(self, *args, **kwargs):
-        if self.state == self.VideoStateOptions.PUBLISH and self.publish_timestamp is None:        
-            self.publish_timestamp = timezone.now()
-        elif self.state == self.VideoStateOptions.DRAFT:
-            self.publish_timestamp = None
+    def save(self, *args, **kwargs):        
         if self.slug is None:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
@@ -61,3 +57,13 @@ class VideoPublishedProxy(Video):
         proxy = True
         verbose_name = 'Published video'
         verbose_name_plural = 'Published videos'
+
+def publish_state_pre_save(sender, instance, *args, **kwargs):
+    is_publish = instance.state == PublishStateOptions.PUBLISH
+    is_draft = instance.state == PublishStateOptions.DRAFT
+    if is_publish and instance.publish_timestamp is None:        
+        instance.publish_timestamp = timezone.now()
+    elif is_draft:
+        instance.publish_timestamp = None
+
+pre_save.connect(publish_state_pre_save, sender=Video)
