@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.utils.text import slugify
 
 class Video(models.Model):
     class VideoStateOptions(models.TextChoices):
@@ -12,7 +13,7 @@ class Video(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     slug = models.SlugField(blank=True, null=True)
-    video_id = models.CharField(max_length=100, null=True, blank=True)
+    video_id = models.CharField(max_length=100, unique=True)
     active = models.BooleanField(default=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -27,6 +28,8 @@ class Video(models.Model):
             self.publish_timestamp = timezone.now()
         elif self.state == self.VideoStateOptions.DRAFT:
             self.publish_timestamp = None
+        if self.slug is None:
+            self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
 class VideoAllProxy(Video):
