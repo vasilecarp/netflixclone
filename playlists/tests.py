@@ -7,13 +7,17 @@ from videos.models import Video
 
 class PlaylistModelTestCase(TestCase):
     def setUp(self):
-        video_a = Video.objects.create(title='This is my title', video_id='abc')
+        video_a = Video.objects.create(title='This is my title', video_id='abc123')
         self.video_a = video_a
         self.obj_a = Playlist.objects.create(title='This is my title', video=video_a)
         self.obj_b = Playlist.objects.create(title='This is my title', state = PublishStateOptions.PUBLISH, video=video_a)
 
     def test_playlist_video(self):        
         self.assertEqual(self.obj_a.video, self.video_a)
+
+    def test_video_playlist(self):
+        qs = self.video_a.playlist_set.all()
+        self.assertEqual(qs.count(), 2)
 
     def test_slug_field(self):
         title = self.obj_a.title
